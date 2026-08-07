@@ -63,22 +63,22 @@
       border-bottom: 1px solid var(--border);
     }
     header.site .inner {
-      display: flex; align-items: center; justify-content: space-between; padding: 10px 0; gap: 16px;
+      display: flex; align-items: center; justify-content: space-between; padding: 10px 0; gap: 16px; flex-wrap: wrap;
     }
-    .logo { font-weight: 800; letter-spacing: -0.5px; color: var(--primary); font-size: 20px; flex-shrink: 0; display:flex;align-items:center;gap:10px; }
-    .logo svg { height: 32px; width: auto; display: block; }
+    .logo { font-weight: 800; letter-spacing: -0.5px; color: var(--primary); font-size: 20px; flex-shrink: 0; display:flex;align-items:center;gap:10px; max-width: 60vw; }
+    .logo svg { height: 32px; width: auto; display: block; max-width: 100%; }
     nav { display: none; gap: 18px; flex-shrink: 0; }
     nav a { color: var(--text-muted); font-weight: 600; font-size: 14px; transition: color 0.2s ease; white-space: nowrap; }
     nav a:hover { color: var(--text); }
     @media (min-width: 860px) { nav { display: flex; } }
 
-    .nav-actions { display: flex; gap: 10px; align-items: center; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
-    .nav-actions .btn-login { color: var(--text); font-weight: 600; font-size: 14px; padding: 8px 10px; white-space: nowrap; }
+    .nav-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+    .nav-actions .btn-login { color: var(--text); font-weight: 600; font-size: 14px; padding: 8px 6px; white-space: nowrap; }
     .nav-actions .btn-outline {
-      color: var(--text); border: 1px solid rgba(255,255,255,0.35); padding: 8px 14px; border-radius: 999px; font-size: 14px; font-weight: 600; white-space: nowrap;
+      color: var(--text); border: 1px solid rgba(255,255,255,0.35); padding: 8px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; white-space: nowrap;
     }
     .nav-actions .btn-small-primary {
-      background: var(--primary); color: #000; padding: 8px 14px; border-radius: 999px; font-size: 14px; font-weight: 700; white-space: nowrap;
+      background: var(--primary); color: #000; padding: 8px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; white-space: nowrap;
     }
 
     .hero { padding: 56px 0 48px; text-align: center; position: relative; overflow: hidden; min-height: 70vh; display: flex; align-items: center; }
@@ -285,15 +285,21 @@
     .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .fade-up.visible { opacity: 1; transform: translateY(0); }
 
+    @media (min-width: 640px) and (max-width: 859px) {
+      nav { display: flex; gap: 12px; }
+      nav a { font-size: 13px; }
+      .nav-actions .btn-outline, .nav-actions .btn-small-primary { padding: 7px 10px; font-size: 13px; }
+    }
     @media (max-width: 480px) {
-      .hero { padding: 48px 0 36px; min-height: auto; }
+      .hero { padding: 44px 0 32px; min-height: auto; }
       .hero-marquee { gap: 8px 10px; }
       .hero-marquee .tag { font-size: 11px; padding: 3px 8px; }
       .hero h1 { letter-spacing: -1px; }
-      .nav-actions .btn-outline, .nav-actions .btn-small-primary { padding: 7px 10px; font-size: 13px; }
-      .nav-actions .btn-login { font-size: 13px; padding: 7px 6px; }
-      .section { padding: 48px 0; }
+      .hero-actions { flex-direction: column; align-items: center; }
+      .section { padding: 44px 0; }
       .section h2 { font-size: 26px; }
+      .pile-wrap { grid-template-columns: 1fr; }
+      .pile-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
