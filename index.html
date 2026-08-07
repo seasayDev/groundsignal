@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #151515;
+      --bg: #120e17;
       --bg-elevated: #1a1a1a;
       --bg-card: #1c1c1c;
       --primary: #efffc8;
@@ -17,7 +17,7 @@
       --text: #ffffff;
       --text-muted: #9ca3af;
       --border: rgba(239,255,200,0.06);
-      --accent-purple: #6f136d;
+      --accent-purple: #a84b80;
       --accent-blue: #6c77f4;
       --accent-orange: #e05729;
       --accent-teal: #278b94;
@@ -58,7 +58,7 @@
     }
     header.site {
       position: sticky; top: 0; z-index: 50;
-      backdrop-filter: blur(14px); background: rgba(21,21,21,0.6);
+      backdrop-filter: blur(14px); background: rgba(18,14,23,0.6);
       border-bottom: 1px solid var(--border);
     }
     header.site .inner {
@@ -71,11 +71,27 @@
     nav a:hover { color: var(--text); }
     @media (min-width: 768px) { nav { display: flex; } }
 
-    .hero { padding: 80px 0 48px; text-align: center; position: relative; overflow: hidden; }
-    .hero::before {
-      content: ''; position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(circle at 50% 30%, rgba(255,202,69,0.12), transparent 55%);
+    .hero { padding: 60px 0 48px; text-align: center; position: relative; overflow: hidden; min-height: 70vh; display: flex; align-items: center; }
+    .hero-grid {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(239,255,200,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(239,255,200,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
     }
+    .hero-tubes {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+    }
+    .hero-tubes svg { width: 100%; height: 100%; }
+    .tube-path {
+      fill: none; stroke: url(#tubeGradient); stroke-width: 18; stroke-linecap: round;
+      filter: drop-shadow(0 0 18px rgba(168,75,128,0.35));
+    }
+    .tube-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; fill: var(--accent-pink); opacity: 0.9; }
+    .tube-icon { font-size: 16px; opacity: 0.9; }
+    .hero-content { position: relative; z-index: 10; width: 100%; }
     .hero-marquee {
       display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 14px;
       margin-bottom: 18px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-muted);
@@ -86,13 +102,18 @@
     }
     .hero h1 {
       font-family: 'Special Gothic Expanded One', 'Arial Black', Impact, sans-serif;
-      font-size: clamp(44px, 7vw, 96px); line-height: 0.95; font-weight: 400;
-      letter-spacing: -1.5px; margin: 0 0 18px; position: relative;
+      font-size: clamp(48px, 8vw, 110px); line-height: 0.92; font-weight: 400;
+      letter-spacing: -2px; margin: 0 0 18px;
     }
     .hero h1 .hl { color: var(--accent); }
+    .hero h1 .cursor {
+      display: inline-block; width: 3px; height: 0.85em; background: var(--accent);
+      margin-left: 4px; vertical-align: middle; animation: blink 1s steps(1) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
     .hero p { color: var(--text-muted); font-size: 20px; margin: 0 0 24px; }
-    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; position: relative; }
-    .hero-meta { margin-top: 14px; color: var(--text-muted); font-size: 13px; position: relative; }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .hero-meta { margin-top: 14px; color: var(--text-muted); font-size: 13px; }
 
     .section { padding: 64px 0; }
     .section.alt { background: linear-gradient(180deg, var(--bg-elevated), var(--bg)); }
@@ -170,7 +191,7 @@
     }
     .pile:hover { transform: rotate(-4deg) scale(1.05); }
     .pile.pink { border-color: rgba(255,64,197,0.4); box-shadow: inset 0 0 0 1px rgba(255,64,197,0.1); }
-    .pile.purple { border-color: rgba(111,19,109,0.4); box-shadow: inset 0 0 0 1px rgba(111,19,109,0.1); }
+    .pile.purple { border-color: rgba(168,75,128,0.4); box-shadow: inset 0 0 0 1px rgba(168,75,128,0.1); }
     .pile.blue { border-color: rgba(108,119,244,0.4); box-shadow: inset 0 0 0 1px rgba(108,119,244,0.1); }
     .pile.teal { border-color: rgba(39,139,148,0.4); box-shadow: inset 0 0 0 1px rgba(39,139,148,0.1); }
     .pile.green { border-color: rgba(0,190,103,0.4); box-shadow: inset 0 0 0 1px rgba(0,190,103,0.1); }
@@ -195,8 +216,8 @@
     .hate { position: relative; padding: 72px 0; overflow: hidden; }
     .hate-path {
       position: absolute; left: -20%; top: -20%; width: 140%; height: 140%; pointer-events: none;
-      background: radial-gradient(circle at 25% 35%, rgba(111,19,109,0.22), transparent 50%),
-                  radial-gradient(circle at 75% 65%, rgba(255,64,197,0.18), transparent 50%);
+      background: radial-gradient(circle at 25% 35%, rgba(168,75,128,0.25), transparent 50%),
+                  radial-gradient(circle at 75% 65%, rgba(255,64,197,0.2), transparent 50%);
       animation: pulse 6s ease-in-out infinite alternate;
     }
     @keyframes pulse {
@@ -220,6 +241,15 @@
 
     .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    .nav-actions { display: flex; gap: 10px; align-items: center; }
+    .nav-actions .btn-login { color: var(--text); font-weight: 600; font-size: 14px; padding: 8px 10px; }
+    .nav-actions .btn-outline {
+      color: var(--text); border: 1px solid rgba(255,255,255,0.35); padding: 8px 14px; border-radius: 999px; font-size: 14px; font-weight: 600;
+    }
+    .nav-actions .btn-small-primary {
+      background: var(--primary); color: #000; padding: 8px 14px; border-radius: 999px; font-size: 14px; font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -228,21 +258,69 @@
     <div class="container inner">
       <div class="logo">Ground<span>Signal</span></div>
       <nav>
-        <a href="#features">Features</a>
+        <a href="#platform">Platform</a>
         <a href="#languages">Languages</a>
-        <a href="#mcp">MCP</a>
-        <a href="#pricing">Pricing</a>
+        <a href="#solutions">Solutions</a>
+        <a href="#resources">Resources</a>
         <a href="#docs">Docs</a>
+        <a href="#pricing">Pricing</a>
       </nav>
-      <div style="display:flex;gap:10px;align-items:center;">
-        <a class="btn btn-ghost" href="#pricing" style="padding:8px 14px;font-size:14px;">Log in</a>
-        <a class="btn btn-primary" href="#pricing" style="padding:8px 14px;font-size:14px;">Get started</a>
+      <div class="nav-actions">
+        <a class="btn-login" href="#pricing">Login →</a>
+        <a class="btn-outline" href="#pricing">Request demo</a>
+        <a class="btn-small-primary" href="#pricing">Get started</a>
       </div>
     </div>
   </header>
 
   <section class="hero">
-    <div class="container">
+    <div class="hero-grid"></div>
+    <div class="hero-tubes">
+      <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="tubeGradient" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ff40c5"/>
+            <stop offset="50%" stop-color="#a84b80"/>
+            <stop offset="100%" stop-color="#6f136d"/>
+          </linearGradient>
+          <path id="tube1" d="M -20,180 C 180,120 260,320 420,280 S 680,80 840,160 S 1100,380 1460,300" />
+          <path id="tube2" d="M -20,420 C 140,360 220,520 400,480 S 640,260 820,340 S 1080,560 1460,460" />
+          <path id="tube3" d="M -20,680 C 160,620 240,780 420,740 S 680,520 840,600 S 1120,820 1460,720" />
+        </defs>
+        <!-- Tubes -->
+        <path class="tube-path" d="M -20,180 C 180,120 260,320 420,280 S 680,80 840,160 S 1100,380 1460,300" />
+        <path class="tube-path" d="M -20,420 C 140,360 220,520 400,480 S 640,260 820,340 S 1080,560 1460,460" style="stroke-width:14;opacity:0.85" />
+        <path class="tube-path" d="M -20,680 C 160,620 240,780 420,740 S 680,520 840,600 S 1120,820 1460,720" style="stroke-width:16;opacity:0.75" />
+
+        <!-- Error text along paths -->
+        <text class="tube-text">
+          <textPath href="#tube1" startOffset="2%">
+            NoMethodError · ParseProtocolError · Rate limit exceeded · 503 Service Unavailable · Timeout · Critical error · BadGateway · Warnings
+          </textPath>
+        </text>
+        <text class="tube-text" style="fill:#ff8c42">
+          <textPath href="#tube2" startOffset="4%">
+            OOMKill! · Data corruption · Payload Too Large · Something went wrong · Out of memory · Request failed · LimitExceeded
+          </textPath>
+        </text>
+        <text class="tube-text" style="fill:#6c77f4">
+          <textPath href="#tube3" startOffset="3%">
+            WHY?! · WAIT, WHAT?! · ERROR · 503 Service Unavail · ???
+          </textPath>
+        </text>
+
+        <!-- Scattered icons/emojis positioned roughly along tubes -->
+        <text x="260" y="240" class="tube-icon">🐛</text>
+        <text x="520" y="180" class="tube-icon">💀</text>
+        <text x="760" y="310" class="tube-icon">🕸️</text>
+        <text x="980" y="240" class="tube-icon">😱</text>
+        <text x="340" y="440" class="tube-icon">🤔</text>
+        <text x="620" y="390" class="tube-icon">WTF?!</text>
+        <text x="880" y="470" class="tube-icon">💥</text>
+        <text x="1120" y="390" class="tube-icon">⚠️</text>
+      </svg>
+    </div>
+    <div class="container hero-content">
       <div class="hero-marquee">
         <span class="tag">NoMethodError</span>
         <span class="tag">RuntimeError</span>
@@ -251,7 +329,7 @@
         <span class="tag">NameError</span>
         <span class="tag">SystemStackError</span>
       </div>
-      <h1 class="fade-up">Why the <span class="hl">f#k</span> did my app crash?</h1>
+      <h1 class="fade-up">Why the <span class="hl">f #k</span><br/>did my app<br/><span class="hl">cras</span><span class="cursor"></span></h1>
       <p class="fade-up">GroundSignal knows why.</p>
       <div class="hero-actions fade-up">
         <a class="btn btn-primary" href="#pricing">Connect your app</a>
