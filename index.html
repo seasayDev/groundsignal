@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GroundSignal — Why the f#k did my app crash?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b0c0f;
+      --bg-elevated: #13151a;
+      --bg-card: #181b23;
+      --text: #e6e7eb;
+      --text-muted: #a1a3ab;
+      --border: #23262f;
+      --accent: #f5c542;
+      --accent-2: #c084fc;
+      --accent-3: #fb7185;
+      --code-bg: #0e1014;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 16px; border-radius: 10px; font-weight: 600;
+      border: 1px solid transparent; cursor: pointer;
+    }
+    .btn-primary { background: #fff; color: #000; border-color: #fff; }
+    .btn-ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,0.25); }
+    .announcement {
+      background: linear-gradient(90deg,#ff4d6d,#ff8c42,#ffd166);
+      color: #000; text-align: center; font-weight: 700; padding: 8px;
+    }
+    header.site {
+      position: sticky; top: 0; z-index: 20; backdrop-filter: blur(14px);
+      background: rgba(11,12,15,0.6); border-bottom: 1px solid var(--border);
+    }
+    header.site .inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; }
+    .logo { font-weight: 800; letter-spacing: -0.5px; }
+    .logo span { color: var(--accent); }
+    nav { display: none; }
+    nav a { color: var(--text-muted); font-weight: 500; margin-right: 18px; font-size: 14px; }
+    nav a:hover { color: #fff; }
+    @media (min-width: 720px) { nav { display: flex; } }
+    .hero { padding: 76px 0 40px; text-align: center; }
+    .hero h1 {
+      font-size: clamp(38px, 6vw, 78px); line-height: 0.98; font-weight: 900;
+      letter-spacing: -1.5px; margin: 0 0 18px;
+    }
+    .hero h1 .hl { color: var(--accent); }
+    .hero p { color: var(--text-muted); font-size: 20px; margin: 0 0 24px; }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .hero-meta { margin-top: 14px; color: var(--text-muted); font-size: 13px; }
+    .columns { display: grid; grid-template-columns: 1fr; gap: 18px; padding: 40px 0; }
+    @media (min-width: 900px) { .columns { grid-template-columns: repeat(3, 1fr); } }
+    .column {
+      background: linear-gradient(180deg, var(--bg-card), rgba(24,27,35,0.7));
+      border: 1px solid var(--border); border-radius: 16px; padding: 22px;
+    }
+    .column h3 { margin: 0 0 10px; font-size: 16px; }
+    .column p { margin: 0; color: var(--text-muted); font-size: 14px; }
+    .column .icon-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .pill { border: 1px solid var(--border); border-radius: 999px; padding: 6px 10px; font-size: 12px; color: var(--text-muted); background: rgba(255,255,255,0.03); }
+    .section { padding: 56px 0; }
+    .section.alt { background: linear-gradient(180deg, var(--bg-elevated), var(--bg)); }
+    .section h2 { font-size: clamp(26px, 3.5vw, 42px); line-height: 1.05; font-weight: 800; margin: 0 0 16px; letter-spacing: -0.8px; }
+    .section h2 .hl { color: var(--accent); }
+    .section p.lead { color: var(--text-muted); font-size: 18px; max-width: 720px; margin: 0 0 24px; }
+    .dashboard {
+      border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+      background: var(--bg-card);
+    }
+    .dashboard .toolbar { display: flex; gap: 10px; padding: 14px; border-bottom: 1px solid var(--border); }
+    .dashboard .toolbar .dot { width: 10px; height: 10px; border-radius: 50%; background: #2b2f3a; }
+    .dashboard .toolbar input { background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 8px 10px; width: 100%; }
+    .dashboard .row { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--border); }
+    @media (min-width: 860px) { .dashboard .row { grid-template-columns: 320px 1fr; } }
+    .dashboard .cell { background: var(--bg-card); padding: 18px; }
+    .kvs { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    @media (min-width: 560px) { .kvs { grid-template-columns: repeat(2,1fr); } }
+    .kv { display: flex; justify-content: space-between; gap: 10px; padding: 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); }
+    .kv .k { color: var(--text-muted); font-size: 12px; }
+    .kv .v { color: var(--text); font-weight: 700; font-size: 13px; }
+    .stack { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.7; color: #b8bcc8; }
+    .stack .red { color: #ff6b6b; } .stack .yellow { color: var(--accent); } .stack .purple { color: var(--accent-2); } .stack .green { color: #86efac; } .stack .muted { color: #6b7080; }
+    .split { display: grid; grid-template-columns: 1fr; gap: 18px; }
+    @media (min-width: 900px) { .split { grid-template-columns: 1.1fr 0.9fr; } }
+    .quote {
+      border-left: 3px solid var(--accent); padding: 18px 20px;
+      background: linear-gradient(180deg, rgba(245,197,66,0.08), rgba(245,197,66,0));
+      border-radius: 0 12px 12px 0;
+    }
+    .quote p { margin: 0; font-weight: 600; }
+    .quote .by { color: var(--text-muted); font-weight: 500; margin-top: 8px; font-size: 13px; }
+    .pile-wrap { display: grid; grid-template-columns: 1fr; gap: 24px; align-items: center; }
+    @media (min-width: 900px) { .pile-wrap { grid-template-columns: 1fr 1fr; } }
+    .pile-box { display: flex; flex-wrap: wrap; gap: 10px; }
+    .pile { width: 90px; height: 90px; border-radius: 14px; border: 1px solid var(--border); background: linear-gradient(180deg,#1c1f27,#13151a); }
+    .pile.pink { border-color: rgba(251,113,133,0.45); box-shadow: inset 0 0 0 1px rgba(251,113,133,0.12); }
+    .pile.purple { border-color: rgba(192,132,252,0.45); box-shadow: inset 0 0 0 1px rgba(192,132,252,0.12); }
+    .stack-clean { display: grid; gap: 10px; }
+    .stack-bar { height: 18px; border-radius: 999px; background: linear-gradient(90deg,#f5c542,#ff8c42); opacity: 0.95; }
+    .integrations { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    .install {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 18px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; color: #cbd5e1;
+    }
+    .install .line { display: flex; gap: 12px; }
+    .install .prompt { color: var(--accent); }
+    .install .cmd { color: #e6e7eb; }
+    .logos { display: flex; flex-wrap: wrap; gap: 18px 28px; align-items: center; opacity: 0.85; margin-top: 14px; }
+    .logos .item { color: var(--text-muted); font-weight: 700; font-size: 15px; letter-spacing: -0.2px; }
+    .hate { position: relative; padding: 60px 0; }
+    .hate-path {
+      position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none;
+      background: radial-gradient(circle at 20% 30%, rgba(192,132,252,0.18), transparent 45%),
+                  radial-gradient(circle at 80% 70%, rgba(251,113,133,0.14), transparent 45%);
+    }
+    .cta-footer { text-align: center; padding: 80px 0 40px; }
+    .cta-footer h2 { font-size: clamp(30px, 4vw, 54px); font-weight: 900; margin: 0 0 16px; }
+    .cta-footer p { color: var(--text-muted); font-size: 18px; margin: 0 0 22px; }
+    footer { border-top: 1px solid var(--border); padding: 40px 0 80px; color: var(--text-muted); }
+    footer .grid { display: grid; grid-template-columns: 1fr; gap: 22px; }
+    @media (min-width: 900px) { footer .grid { grid-template-columns: repeat(4, 1fr); } }
+    footer h4 { margin: 0 0 12px; color: #fff; font-size: 14px; text-transform: uppercase; letter-spacing: 0.12em; }
+    footer ul { margin: 0; padding: 0; list-style: none; }
+    footer ul li { margin-bottom: 8px; font-size: 14px; }
+    footer ul a { color: var(--text-muted); }
+    footer ul a:hover { color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="announcement">🚀 Launch Week 2026 — Check it out</div>
+  <header class="site">
+    <div class="container inner">
+      <div class="logo">Ground<span>Signal</span></div>
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#languages">Languages</a>
+        <a href="#mcp">MCP</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#docs">Docs</a>
+      </nav>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <a class="btn btn-ghost" href="#pricing">Log in</a>
+        <a class="btn btn-primary" href="#pricing">Get started</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>Why the <span class="hl">f#k</span> did my app crash?</h1>
+      <p>GroundSignal knows why.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#pricing">Connect your app</a>
+        <a class="btn btn-ghost" href="#pricing">Get a demo</a>
+      </div>
+      <div class="hero-meta">Free for 30 days · No credit card · 2-minute install</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column">
+          <h3>When it’s broken</h3>
+          <p>Something breaks. GroundSignal shows you the errors, the slow queries, and the deploys responsible. Dashboards ready from first deploy.</p>
+          <div class="icon-row">
+            <span class="pill">Error Tracking</span>
+            <span class="pill">Performance</span>
+            <span class="pill">Tracing</span>
+          </div>
+        </div>
+        <div class="column">
+          <h3>Why it happened</h3>
+          <p>The alert is just the symptom. GroundSignal connects the error to the log, the log to the trace, the trace to the deploy. No <code style="color:#ff6b6b">tail -f</code> required.</p>
+          <div class="icon-row">
+            <span class="pill">Log Search</span>
+            <span class="pill">Live Tail</span>
+            <span class="pill">Trace-Linked Logs</span>
+          </div>
+        </div>
+        <div class="column">
+          <h3>How to fix it</h3>
+          <p>Stop the AI guesswork. GroundSignal’s MCP gives Claude, Cursor, or Zed the error, the trace, and the deploy. Your AI writes a fix that fits.</p>
+          <div class="icon-row">
+            <span class="pill">MCP</span>
+            <span class="pill">Cursor</span>
+            <span class="pill">Claude</span>
+          </div>
+        </div>
+      </div>
+      <div class="logos" id="languages">
+        <span class="item">Ruby</span><span class="item">Elixir</span><span class="item">Node.js</span><span class="item">Python</span><span class="item">PHP</span><span class="item">Go</span><span class="item">Java</span><span class="item">Rust</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="features">
+    <div class="container">
+      <h2>Give it to me straight, what’s going on with my app?</h2>
+      <p class="lead">Observe and monitor across your entire stack. Straight answers. Which query is slow, which deploy broke it, which service is dragging the rest down.</p>
+      <div class="dashboard">
+        <div class="toolbar">
+          <div class="dot" style="background:#ff5f57"></div>
+          <div class="dot" style="background:#febc2e"></div>
+          <div class="dot" style="background:#28c840"></div>
+          <input type="text" value="Search errors, traces, and deploys..." readonly />
+        </div>
+        <div class="row">
+          <div class="cell">
+            <div class="kvs">
+              <div class="kv"><div><div class="k">Issue</div><div class="v">NoMethodError</div></div></div>
+              <div class="kv"><div><div class="k">Occurrences</div><div class="v">1,247</div></div></div>
+              <div class="kv"><div><div class="k">Last seen</div><div class="v">2m ago</div></div></div>
+              <div class="kv"><div><div class="k">Host</div><div class="v">web-03</div></div></div>
+              <div class="kv"><div><div class="k">Deploy</div><div class="v">#4821</div></div></div>
+              <div class="kv"><div><div class="k">Env</div><div class="v">production</div></div></div>
+            </div>
+          </div>
+          <div class="cell">
+            <div class="stack">
+              <div><span class="red">NoMethodError</span> <span class="muted">undefined method `name` for nil:NilClass</span></div>
+              <div><span class="yellow">app/controllers/users_controller.rb:42</span></div>
+              <div><span class="purple">def show</span></div>
+              <div>  <span class="green">@user</span> = User.find(params[:id])</div>
+              <div>  render <span class="purple">json:</span> <span class="green">@user</span>.as_json</div>
+              <div><span class="muted">Deployed 14 minutes ago by @ops</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quote" style="margin-top:18px">
+        <p>“Debugging is complicated — you almost need a training course. With GroundSignal you don’t. Everything you need is right in front of you.”</p>
+        <div class="by">Danil, VP of Engineering, Kanso</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Found the issue, how do I fix it <span class="hl">or can AI just do it?</span></h2>
+      <p class="lead">Fix and resolve issues with AI assistance. Connect Claude, Cursor, or Zed via MCP. GroundSignal feeds your AI the error, the trace, the deploy, the code.</p>
+      <div class="split">
+        <div class="dashboard">
+          <div class="toolbar"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <div class="cell">
+            <div class="stack">
+              <div><span class="red">Timeout::Error</span> <span class="muted">connection to db exceeded 5s</span></div>
+              <div><span class="yellow">db/queries/orders.rb:18</span></div>
+              <div><span class="purple">def</span> recent_orders</div>
+              <div>  Order.<span class="green">where</span>(status: <span class="purple">:active</span>)</div>
+              <div>    .order(created_at: <span class="purple">:desc</span>)</div>
+              <div>    .limit(<span class="green">50</span>)</div>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard">
+          <div class="toolbar"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <div class="cell">
+            <div style="border:1px solid var(--border);border-radius:12px;padding:14px;background:var(--bg)">
+              <div style="color:var(--accent);font-weight:700;font-size:13px">Suggested fix</div>
+              <div class="stack" style="margin-top:8px">
+                <div><span class="purple">add_index</span> :orders, [:status, :created_at]</div>
+                <div><span class="muted">or paginate with offset/keyset</span></div>
+              </div>
+              <div style="margin-top:12px;display:flex;gap:10px">
+                <a class="btn btn-primary" href="#" style="padding:8px 12px;font-size:13px">Approve</a>
+                <a class="btn btn-ghost" href="#" style="padding:8px 12px;font-size:13px">Dismiss</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container">
+      <h2>This isn’t a stack. <span class="hl">It’s a pile.</span></h2>
+      <p class="lead">Just enough monitoring. All in one place. None of the mess.</p>
+      <div class="pile-wrap">
+        <div>
+          <div class="pile-box">
+            <div class="pile pink"></div><div class="pile purple"></div><div class="pile pink"></div>
+            <div class="pile purple"></div><div class="pile pink"></div><div class="pile purple"></div>
+            <div class="pile pink"></div><div class="pile purple"></div><div class="pile pink"></div>
+          </div>
+          <div class="integrations">
+            <span class="pill">Errors</span><span class="pill">Logs</span><span class="pill">Performance</span>
+            <span class="pill">Host</span><span class="pill">Kubernetes</span><span class="pill">Anomalies</span>
+            <span class="pill">Cron jobs</span><span class="pill">Uptime</span>
+          </div>
+        </div>
+        <div class="stack-clean">
+          <div class="stack-bar" style="width:92%"></div>
+          <div class="stack-bar" style="width:78%"></div>
+          <div class="stack-bar" style="width:64%"></div>
+          <div class="stack-bar" style="width:48%"></div>
+          <div class="stack-bar" style="width:35%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Full-stack monitoring. <span class="hl">In a few lines of code.</span></h2>
+      <p class="lead">4.8 · 20K+ developers</p>
+      <div class="install">
+        <div class="line"><span class="prompt">$</span><span class="cmd">gem install groundsignal</span></div>
+        <div class="line"><span class="prompt">$</span><span class="cmd">groundsignal install</span></div>
+      </div>
+      <div class="hero-actions" style="margin-top:18px">
+        <a class="btn btn-primary" href="#pricing">Start free trial</a>
+        <a class="btn btn-ghost" href="#pricing">View pricing</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="pricing">
+    <div class="container">
+      <h2>Pricing that <span class="hl">doesn’t suck</span></h2>
+      <p class="lead">No surprise invoices. No shocking bills. No nasty negotiations.</p>
+      <div class="columns">
+        <div class="column">
+          <h3>Free — $0</h3>
+          <p>50K requests/mo · 1GB logging · 5-day retention · Unlimited users</p>
+          <a class="btn btn-primary" href="#" style="margin-top:12px">Start free</a>
+        </div>
+        <div class="column">
+          <h3>Paid — $279/yr</h3>
+          <p>250K requests/mo · 1GB logging included · Long-term log storage add-on · HIPAA add-on</p>
+          <a class="btn btn-primary" href="#" style="margin-top:12px">Start trial</a>
+        </div>
+        <div class="column">
+          <h3>Add-ons</h3>
+          <p>Long-term log storage $89/mo · HIPAA compliance $89/mo · US hosting available</p>
+          <a class="btn btn-ghost" href="#" style="margin-top:12px">Contact sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="mcp">
+    <div class="container">
+      <h2>GroundSignal in your <span class="hl">AI editor</span></h2>
+      <p class="lead">Connect AppSignal’s MCP server to your AI coding tools and debug without leaving the editor.</p>
+      <div class="install">
+        <div style="color:var(--text-muted);font-size:12px;margin-bottom:8px">Claude Code</div>
+        <div class="line"><span class="prompt">></span><span class="cmd">claude mcp add --transport http groundsignal https://groundsignal/api/mcp</span></div>
+        <div style="color:var(--text-muted);font-size:12px;margin:12px 0 8px">Cursor</div>
+        <div class="line"><span class="prompt">{</span><span class="cmd">"mcpServers": { "appsignal": { "command": "npx", "args": ["-y", "mcp-remote", "https://groundsignal/api/mcp"] } }</span></div>
+        <div style="color:var(--text-muted);font-size:12px;margin:12px 0 8px">VS Code</div>
+        <div class="line"><span class="prompt">{</span><span class="cmd">"servers": { "appsignal": { "type": "http", "url": "https://groundsignal/api/mcp" } }</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt hate">
+    <div class="h-path"></div>
+    <div class="container" style="position:relative">
+      <h2>You’ll hate GroundSignal <span class="hl">if…</span></h2>
+      <p class="lead">You love exception, NoMethodError, OutOfMemory, StackOverflow, RateLimit, 503 Service Unavailable.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#pricing">See plans</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-footer">
+    <div class="container">
+      <h2>Make your next crash make sense.</h2>
+      <p>Free for 30 days. No credit card. Two-minute install.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#pricing">Connect your app</a>
+        <a class="btn btn-ghost" href="#pricing">Get a demo</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container grid">
+      <div>
+        <div class="logo" style="margin-bottom:10px">Ground<span>Signal</span></div>
+        <p style="max-width:260px">Application monitoring, error tracking, and AI-powered debugging.</p>
+      </div>
+      <div>
+        <h4>Features</h4>
+        <ul>
+          <li><a href="#">Error Tracking</a></li>
+          <li><a href="#">Performance</a></li>
+          <li><a href="#">Log Management</a></li>
+          <li><a href="#">Uptime</a></li>
+          <li><a href="#">Anomalies</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Changelog</a></li>
+          <li><a href="#">API Reference</a></li>
+          <li><a href="#">Status</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Compare</h4>
+        <ul>
+          <li><a href="#">vs Datadog</a></li>
+          <li><a href="#">vs New Relic</a></li>
+          <li><a href="#">vs Sentry</a></li>
+          <li><a href="#">vs Honeybadger</a></li>
+          <li><a href="#">vs Scout APM</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
