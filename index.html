@@ -32,6 +32,7 @@
       color: var(--text);
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
     a { color: inherit; text-decoration: none; }
     .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
@@ -39,7 +40,7 @@
       display: inline-flex; align-items: center; gap: 8px;
       padding: 10px 16px; border-radius: 32px; font-weight: 600; font-size: 16px;
       border: 0px solid transparent; cursor: pointer; transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
-      font-family: inherit;
+      font-family: inherit; white-space: nowrap;
     }
     .btn-primary {
       background: var(--primary); color: #000;
@@ -62,16 +63,25 @@
       border-bottom: 1px solid var(--border);
     }
     header.site .inner {
-      display: flex; align-items: center; justify-content: space-between; padding: 10px 0;
+      display: flex; align-items: center; justify-content: space-between; padding: 10px 0; gap: 16px;
     }
-    .logo { font-weight: 800; letter-spacing: -0.5px; color: var(--primary); font-size: 20px; }
+    .logo { font-weight: 800; letter-spacing: -0.5px; color: var(--primary); font-size: 20px; flex-shrink: 0; }
     .logo span { color: var(--accent); }
-    nav { display: none; gap: 20px; }
-    nav a { color: var(--text-muted); font-weight: 600; font-size: 14px; transition: color 0.2s ease; }
+    nav { display: none; gap: 18px; flex-shrink: 0; }
+    nav a { color: var(--text-muted); font-weight: 600; font-size: 14px; transition: color 0.2s ease; white-space: nowrap; }
     nav a:hover { color: var(--text); }
-    @media (min-width: 768px) { nav { display: flex; } }
+    @media (min-width: 860px) { nav { display: flex; } }
 
-    .hero { padding: 60px 0 48px; text-align: center; position: relative; overflow: hidden; min-height: 70vh; display: flex; align-items: center; }
+    .nav-actions { display: flex; gap: 10px; align-items: center; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+    .nav-actions .btn-login { color: var(--text); font-weight: 600; font-size: 14px; padding: 8px 10px; white-space: nowrap; }
+    .nav-actions .btn-outline {
+      color: var(--text); border: 1px solid rgba(255,255,255,0.35); padding: 8px 14px; border-radius: 999px; font-size: 14px; font-weight: 600; white-space: nowrap;
+    }
+    .nav-actions .btn-small-primary {
+      background: var(--primary); color: #000; padding: 8px 14px; border-radius: 999px; font-size: 14px; font-weight: 700; white-space: nowrap;
+    }
+
+    .hero { padding: 56px 0 48px; text-align: center; position: relative; overflow: hidden; min-height: 70vh; display: flex; align-items: center; }
     .hero-grid {
       position: absolute; inset: 0; pointer-events: none;
       background-image:
@@ -102,7 +112,7 @@
     }
     .hero h1 {
       font-family: 'Special Gothic Expanded One', 'Arial Black', Impact, sans-serif;
-      font-size: clamp(48px, 8vw, 110px); line-height: 0.92; font-weight: 400;
+      font-size: clamp(44px, 7vw, 110px); line-height: 0.92; font-weight: 400;
       letter-spacing: -2px; margin: 0 0 18px;
     }
     .hero h1 .hl { color: var(--accent); }
@@ -168,6 +178,7 @@
     .kv .v { color: var(--text); font-weight: 700; font-size: 13px; }
     .stack {
       font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.7; color: #b8bcc8;
+      overflow-wrap: anywhere;
     }
     .stack .red { color: #ff6b6b; } .stack .yellow { color: var(--accent); } .stack .purple { color: var(--accent-purple); } .stack .green { color: var(--accent-green); } .stack .muted { color: #6b7080; }
 
@@ -206,6 +217,7 @@
     .install {
       background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px;
       font-family: 'JetBrains Mono', monospace; color: #cbd5e1; font-size: 14px;
+      overflow-wrap: anywhere;
     }
     .install .line { display: flex; gap: 12px; }
     .install .prompt { color: var(--accent); }
@@ -242,13 +254,13 @@
     .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .fade-up.visible { opacity: 1; transform: translateY(0); }
 
-    .nav-actions { display: flex; gap: 10px; align-items: center; }
-    .nav-actions .btn-login { color: var(--text); font-weight: 600; font-size: 14px; padding: 8px 10px; }
-    .nav-actions .btn-outline {
-      color: var(--text); border: 1px solid rgba(255,255,255,0.35); padding: 8px 14px; border-radius: 999px; font-size: 14px; font-weight: 600;
-    }
-    .nav-actions .btn-small-primary {
-      background: var(--primary); color: #000; padding: 8px 14px; border-radius: 999px; font-size: 14px; font-weight: 700;
+    @media (max-width: 480px) {
+      .hero { padding: 48px 0 36px; min-height: auto; }
+      .hero-marquee { gap: 8px 10px; }
+      .hero-marquee .tag { font-size: 11px; padding: 3px 8px; }
+      .hero h1 { letter-spacing: -1px; }
+      .nav-actions .btn-outline, .nav-actions .btn-small-primary { padding: 7px 10px; font-size: 13px; }
+      .nav-actions .btn-login { font-size: 13px; padding: 7px 6px; }
     }
   </style>
 </head>
@@ -283,16 +295,11 @@
             <stop offset="50%" stop-color="#a84b80"/>
             <stop offset="100%" stop-color="#6f136d"/>
           </linearGradient>
-          <path id="tube1" d="M -20,180 C 180,120 260,320 420,280 S 680,80 840,160 S 1100,380 1460,300" />
-          <path id="tube2" d="M -20,420 C 140,360 220,520 400,480 S 640,260 820,340 S 1080,560 1460,460" />
-          <path id="tube3" d="M -20,680 C 160,620 240,780 420,740 S 680,520 840,600 S 1120,820 1460,720" />
         </defs>
-        <!-- Tubes -->
         <path class="tube-path" d="M -20,180 C 180,120 260,320 420,280 S 680,80 840,160 S 1100,380 1460,300" />
         <path class="tube-path" d="M -20,420 C 140,360 220,520 400,480 S 640,260 820,340 S 1080,560 1460,460" style="stroke-width:14;opacity:0.85" />
         <path class="tube-path" d="M -20,680 C 160,620 240,780 420,740 S 680,520 840,600 S 1120,820 1460,720" style="stroke-width:16;opacity:0.75" />
 
-        <!-- Error text along paths -->
         <text class="tube-text">
           <textPath href="#tube1" startOffset="2%">
             NoMethodError · ParseProtocolError · Rate limit exceeded · 503 Service Unavailable · Timeout · Critical error · BadGateway · Warnings
@@ -309,7 +316,6 @@
           </textPath>
         </text>
 
-        <!-- Scattered icons/emojis positioned roughly along tubes -->
         <text x="260" y="240" class="tube-icon">🐛</text>
         <text x="520" y="180" class="tube-icon">💀</text>
         <text x="760" y="310" class="tube-icon">🕸️</text>
@@ -446,7 +452,7 @@
                 <div><span class="purple">add_index</span> :orders, [:status, :created_at]</div>
                 <div><span class="muted">or paginate with offset/keyset</span></div>
               </div>
-              <div style="margin-top:12px;display:flex;gap:10px">
+              <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
                 <a class="btn btn-primary" href="#" style="padding:8px 14px;font-size:13px">Approve</a>
                 <a class="btn btn-ghost" href="#" style="padding:8px 14px;font-size:13px">Dismiss</a>
               </div>
