@@ -65,8 +65,8 @@
     header.site .inner {
       display: flex; align-items: center; justify-content: space-between; padding: 10px 0; gap: 16px;
     }
-    .logo { font-weight: 800; letter-spacing: -0.5px; color: var(--primary); font-size: 20px; flex-shrink: 0; }
-    .logo svg { height: 26px; width: auto; display: block; }
+    .logo { font-weight: 800; letter-spacing: -0.5px; color: var(--primary); font-size: 20px; flex-shrink: 0; display:flex;align-items:center;gap:10px; }
+    .logo svg { height: 32px; width: auto; display: block; }
     nav { display: none; gap: 18px; flex-shrink: 0; }
     nav a { color: var(--text-muted); font-weight: 600; font-size: 14px; transition: color 0.2s ease; white-space: nowrap; }
     nav a:hover { color: var(--text); }
@@ -625,9 +625,9 @@
   <footer>
     <div class="container grid">
       <div>
-        <div class="logo" style="margin-bottom:10px;font-size:22px">
-          <img src="/assets/logo.svg" alt="GroundSignal" style="height:26px;width:auto;display:block" />
-        </div>
+        <a href="#" class="logo" style="margin-bottom:10px;font-size:22px" aria-label="GroundSignal home">
+          <img src="/assets/logo.svg" alt="GroundSignal" style="height:32px;width:auto;display:block" />
+        </a>
         <p style="max-width:260px;font-size:14px">Application monitoring, error tracking, and AI-powered debugging.</p>
       </div>
       <div>
