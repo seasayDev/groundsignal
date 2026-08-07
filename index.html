@@ -16,8 +16,8 @@
       --accent: #ffca45;
       --text: #ffffff;
       --text-muted: #9ca3af;
-      --border: rgba(239,255,200,0.06);
-      --accent-purple: #a84b80;
+      --border: rgba(239,255,200,0.08);
+      --accent-purple: #d946ef;
       --accent-blue: #6c77f4;
       --accent-orange: #e05729;
       --accent-teal: #278b94;
@@ -66,7 +66,7 @@
       display: flex; align-items: center; justify-content: space-between; padding: 10px 0; gap: 16px;
     }
     .logo { font-weight: 800; letter-spacing: -0.5px; color: var(--primary); font-size: 20px; flex-shrink: 0; }
-    .logo span { color: var(--accent); }
+    .logo svg { height: 26px; width: auto; display: block; }
     nav { display: none; gap: 18px; flex-shrink: 0; }
     nav a { color: var(--text-muted); font-weight: 600; font-size: 14px; transition: color 0.2s ease; white-space: nowrap; }
     nav a:hover { color: var(--text); }
@@ -192,27 +192,58 @@
     .quote p { margin: 0; font-weight: 600; font-size: 17px; }
     .quote .by { color: var(--text-muted); font-weight: 500; margin-top: 8px; font-size: 13px; }
 
-    .pile-wrap { display: grid; grid-template-columns: 1fr; gap: 24px; align-items: center; }
-    @media (min-width: 900px) { .pile-wrap { grid-template-columns: 1fr 1fr; } }
-    .pile-box { display: flex; flex-wrap: wrap; gap: 10px; }
-    .pile {
-      width: 80px; height: 80px; border-radius: 12px; border: 1px solid var(--border);
-      background: linear-gradient(180deg,#1c1f27,#13151a);
-      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    .pile-section { padding: 64px 0; }
+    .pile-headline { text-align: center; margin-bottom: 28px; position: relative; }
+    .pile-headline h2 {
+      font-family: 'Special Gothic Expanded One', 'Arial Black', Impact, sans-serif;
+      font-size: clamp(28px, 3.5vw, 44px); line-height: 1.05; font-weight: 400; letter-spacing: -0.8px;
     }
-    .pile:hover { transform: rotate(-4deg) scale(1.05); }
-    .pile.pink { border-color: rgba(255,64,197,0.4); box-shadow: inset 0 0 0 1px rgba(255,64,197,0.1); }
-    .pile.purple { border-color: rgba(168,75,128,0.4); box-shadow: inset 0 0 0 1px rgba(168,75,128,0.1); }
-    .pile.blue { border-color: rgba(108,119,244,0.4); box-shadow: inset 0 0 0 1px rgba(108,119,244,0.1); }
-    .pile.teal { border-color: rgba(39,139,148,0.4); box-shadow: inset 0 0 0 1px rgba(39,139,148,0.1); }
-    .pile.green { border-color: rgba(0,190,103,0.4); box-shadow: inset 0 0 0 1px rgba(0,190,103,0.1); }
-    .stack-clean { display: grid; gap: 10px; }
-    .stack-bar {
-      height: 16px; border-radius: 999px;
-      background: linear-gradient(90deg, var(--accent), var(--accent-orange));
-      opacity: 0.9;
-      transition: width 1s cubic-bezier(0.22, 0.61, 0.355, 1);
+    .pile-headline .hl { color: var(--accent); }
+    .pile-headline .hl-purple { color: var(--accent-purple); }
+    .pile-headline p.lead { color: var(--text-muted); font-size: 18px; max-width: 720px; margin: 10px auto 0; }
+    .pile-arrow {
+      display: block; margin: 0 auto 18px; width: 120px; max-width: 40vw; height: auto;
     }
+    .pile-wrap { display: grid; grid-template-columns: 1fr; gap: 24px; align-items: start; }
+    @media (min-width: 960px) { .pile-wrap { grid-template-columns: 0.9fr 1.1fr; } }
+    .pile-chain { display: flex; flex-direction: column; gap: 12px; position: relative; padding-left: 24px; }
+    .pile-chain::before {
+      content: ''; position: absolute; left: 10px; top: 12px; bottom: 12px; width: 2px;
+      background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.25) 0 6px, transparent 6px 12px);
+    }
+    .pile-node {
+      display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 999px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); position: relative;
+    }
+    .pile-node .plus {
+      position: absolute; left: -30px; top: 50%; transform: translateY(-50%);
+      width: 20px; height: 20px; border-radius: 50%; background: #26262a; color: #fff;
+      display: grid; place-items: center; font-size: 12px; font-weight: 700; border: 1px solid rgba(255,255,255,0.1);
+    }
+    .pile-node .icon { font-size: 18px; }
+    .pile-node .label { color: var(--text-muted); font-size: 14px; font-weight: 600; }
+    .pile-dashboard {
+      border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: var(--bg-card);
+      box-shadow: rgba(10,21,48,0.05) 0 1px 2px 0;
+    }
+    .pile-dashboard .toolbar {
+      display: flex; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--border); align-items: center;
+    }
+    .pile-dashboard .toolbar .dot { width: 10px; height: 10px; border-radius: 50%; background: #2b2f3a; }
+    .pile-dashboard .toolbar .title { color: var(--accent); font-weight: 700; font-size: 14px; margin-left: 6px; }
+    .pile-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 14px;
+    }
+    @media (max-width: 480px) { .pile-grid { grid-template-columns: repeat(2, 1fr); } }
+    .pile-tile {
+      border: 1px solid var(--border); border-radius: 12px; padding: 14px; background: var(--bg);
+      display: flex; flex-direction: column; gap: 10px; align-items: flex-start;
+    }
+    .pile-tile .tile-icon { font-size: 22px; }
+    .pile-tile .tile-label { color: var(--text-muted); font-size: 13px; font-weight: 600; }
+    .pile-footer { text-align: center; padding: 18px 14px; color: var(--text-muted); font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .pile-footer .smile { font-size: 22px; }
+
     .integrations { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
     .install {
       background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px;
@@ -261,6 +292,8 @@
       .hero h1 { letter-spacing: -1px; }
       .nav-actions .btn-outline, .nav-actions .btn-small-primary { padding: 7px 10px; font-size: 13px; }
       .nav-actions .btn-login { font-size: 13px; padding: 7px 6px; }
+      .section { padding: 48px 0; }
+      .section h2 { font-size: 26px; }
     }
   </style>
 </head>
@@ -268,7 +301,9 @@
   <div class="announcement">🚀 Launch Week 2026 — Check it out</div>
   <header class="site">
     <div class="container inner">
-      <div class="logo">Ground<span>Signal</span></div>
+      <a href="#" class="logo" aria-label="GroundSignal home">
+        <img src="/assets/logo.svg" alt="GroundSignal" style="height:26px;width:auto;display:block" />
+      </a>
       <nav>
         <a href="#platform">Platform</a>
         <a href="#languages">Languages</a>
@@ -295,6 +330,9 @@
             <stop offset="50%" stop-color="#a84b80"/>
             <stop offset="100%" stop-color="#6f136d"/>
           </linearGradient>
+          <path id="tube1" d="M -20,180 C 180,120 260,320 420,280 S 680,80 840,160 S 1100,380 1460,300" />
+          <path id="tube2" d="M -20,420 C 140,360 220,520 400,480 S 640,260 820,340 S 1080,560 1460,460" />
+          <path id="tube3" d="M -20,680 C 160,620 240,780 420,740 S 680,520 840,600 S 1120,820 1460,720" />
         </defs>
         <path class="tube-path" d="M -20,180 C 180,120 260,320 420,280 S 680,80 840,160 S 1100,380 1460,300" />
         <path class="tube-path" d="M -20,420 C 140,360 220,520 400,480 S 640,260 820,340 S 1080,560 1460,460" style="stroke-width:14;opacity:0.85" />
@@ -463,30 +501,46 @@
     </div>
   </section>
 
-  <section class="section alt">
+  <section class="section alt pile-section" id="pile">
     <div class="container">
-      <h2 class="fade-up">This isn’t a stack. <span class="hl">It’s a pile.</span></h2>
-      <p class="lead fade-up">Just enough monitoring. All in one place. None of the mess.</p>
+      <div class="pile-headline fade-up">
+        <h2>This isn’t a stack.<br/><span class="hl-purple">It’s a pile.</span></h2>
+        <p class="lead">Just enough monitoring. All in one place. None of the mess.</p>
+      </div>
+      <svg class="pile-arrow" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M160 10 C120 40 80 50 60 80" stroke="rgba(255,255,255,0.35)" stroke-width="3" stroke-linecap="round"/>
+        <path d="M50 90 L60 80 L55 72" stroke="rgba(255,255,255,0.35)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
       <div class="pile-wrap fade-up">
-        <div>
-          <div class="pile-box">
-            <div class="pile pink"></div><div class="pile purple"></div><div class="pile blue"></div>
-            <div class="pile teal"></div><div class="pile green"></div><div class="pile pink"></div>
-            <div class="pile purple"></div><div class="pile blue"></div><div class="pile teal"></div>
-            <div class="pile green"></div><div class="pile pink"></div><div class="pile purple"></div>
-          </div>
-          <div class="integrations">
-            <span class="pill">Errors</span><span class="pill">Logs</span><span class="pill">Performance</span>
-            <span class="pill">Host</span><span class="pill">Kubernetes</span><span class="pill">Anomalies</span>
-            <span class="pill">Cron jobs</span><span class="pill">Uptime</span>
-          </div>
+        <div class="pile-chain">
+          <div class="pile-node"><div class="plus">+</div><div class="icon">🔺</div><div class="label">Sentry for errors</div></div>
+          <div class="pile-node"><div class="plus">+</div><div class="icon">🐶</div><div class="label">Datadog for APM</div></div>
+          <div class="pile-node"><div class="plus">+</div><div class="icon">📊</div><div class="label">Grafana for logs</div></div>
+          <div class="pile-node"><div class="plus">+</div><div class="icon">⏱️</div><div class="label">UptimeRobot for uptime</div></div>
+          <div class="pile-node"><div class="plus">+</div><div class="icon">📞</div><div class="label">Statuspage for status</div></div>
         </div>
-        <div class="stack-clean">
-          <div class="stack-bar" style="width:92%"></div>
-          <div class="stack-bar" style="width:78%"></div>
-          <div class="stack-bar" style="width:64%"></div>
-          <div class="stack-bar" style="width:48%"></div>
-          <div class="stack-bar" style="width:35%"></div>
+        <div class="pile-dashboard">
+          <div class="toolbar">
+            <div class="dot" style="background:#ff5f57"></div>
+            <div class="dot" style="background:#febc2e"></div>
+            <div class="dot" style="background:#28c840"></div>
+            <div class="title">GroundSignal</div>
+          </div>
+          <div class="pile-grid">
+            <div class="pile-tile"><div class="tile-icon">🐛</div><div class="tile-label">Errors</div></div>
+            <div class="pile-tile"><div class="tile-icon">📋</div><div class="tile-label">Logs</div></div>
+            <div class="pile-tile"><div class="tile-icon">🚀</div><div class="tile-label">Performance</div></div>
+            <div class="pile-tile"><div class="tile-icon">🖥️</div><div class="tile-label">Host</div></div>
+            <div class="pile-tile"><div class="tile-icon">⚓</div><div class="tile-label">Kubernetes</div></div>
+            <div class="pile-tile"><div class="tile-icon">🔔</div><div class="tile-label">Anomalies</div></div>
+            <div class="pile-tile"><div class="tile-icon">🔄</div><div class="tile-label">Cron jobs</div></div>
+            <div class="pile-tile"><div class="tile-icon">📑</div><div class="tile-label">Status pages</div></div>
+            <div class="pile-tile"><div class="tile-icon">🔋</div><div class="tile-label">Uptime</div></div>
+          </div>
+          <div class="pile-footer">
+            <div class="smile">🙂</div>
+            <div>One install · One invoice · All the context</div>
+          </div>
         </div>
       </div>
     </div>
@@ -571,7 +625,9 @@
   <footer>
     <div class="container grid">
       <div>
-        <div class="logo" style="margin-bottom:10px;font-size:22px">Ground<span>Signal</span></div>
+        <div class="logo" style="margin-bottom:10px;font-size:22px">
+          <img src="/assets/logo.svg" alt="GroundSignal" style="height:26px;width:auto;display:block" />
+        </div>
         <p style="max-width:260px;font-size:14px">Application monitoring, error tracking, and AI-powered debugging.</p>
       </div>
       <div>
